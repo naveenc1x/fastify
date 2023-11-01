@@ -1,27 +1,31 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EurekaModule } from 'nestjs-eureka';
+import { BullModule } from '@nestjs/bull';
+import { AppProcessor } from './app.processor.service';
 
 @Module({
   imports: [
-    EurekaModule.forRoot({
-      disable: false,
-      disableDiscovery: false,
-      eureka: {
-        host: "ortb.c1exchange.com",
-        port: 8761,
-        servicePath: '/eureka/apps',
-        maxRetries: 10,
-        requestRetryDelay: 10000,
-      },
-      service: {
-        name: 'webhook-test-service',
-        port: parseInt(process.env.APP_PORT) || 3000,
-      },
-    }),
+    BullModule.registerQueueAsync({
+      name: 'testQueue',
+      useFactory: async () => ({
+        name: 'testQueue',
+        redis: {
+          host: '127.0.0.1',
+          port: 6379
+        },
+        defaultJobOptions: {
+          removeOnComplete: true,
+          removeOnFail: true,
+        },
+        settings: {
+          lockDuration: 300000,
+        },
+      }),
+    },),
+
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppProcessor],
 })
 export class AppModule { }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -9,9 +9,21 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-
-  @Post('/webhook')
-  async PostTest(@Req() req, @Body() body): Promise<void> {
-    await this.appService.PostTest(req, body);
+  @Get('/add')
+  addjob() {
+    this.appService.addjob();
   }
+  @Get('/adds')
+  addjobs() {
+    this.appService.add();
+  }
+  @Get('/remove')
+  remove() {
+    this.appService.removejob();
+  }
+  @Get('/removeall')
+  removeA() {
+    this.appService.removeAlljob();
+  }
+
 }

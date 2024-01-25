@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BullModule } from '@nestjs/bull';
 import { AppProcessor } from './app.processor.service';
+import { KafkaConsumerService } from './kafka-consumer.service';
+// import { KafkaConsumerService1 } from './consumer.service';
 
 @Module({
   imports: [
@@ -26,6 +28,6 @@ import { AppProcessor } from './app.processor.service';
 
   ],
   controllers: [AppController],
-  providers: [AppService, AppProcessor],
+  providers: [AppService, AppProcessor,KafkaConsumerService],
 })
 export class AppModule { }

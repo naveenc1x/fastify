@@ -1,12 +1,17 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
+import { Kafka } from 'kafkajs';
 import * as moment from 'moment';
+import { KafkaConsumerService } from './kafka-consumer.service';
 
 
 @Injectable()
 export class AppService {
-  constructor(@InjectQueue('testQueue') private readonly queue: Queue) {
+  private kafka: Kafka
+  constructor(@InjectQueue('testQueue') private readonly queue: Queue,
+    private consumerService: KafkaConsumerService) {
+    this.kafka = new Kafka({ brokers: ['localhost:29092'] })
   }
 
 
@@ -16,7 +21,7 @@ export class AppService {
 
   async addjob(): Promise<void> {
 
-    const job = await this.queue.add('testQueue', 'test', { repeat: { cron: '45 12 * * *' } });
+    const job = await this.queue.add('testQueue', 'c-1', { delay: 5000 });
 
     console.log("addjob", job.id)
     return
@@ -41,6 +46,10 @@ export class AppService {
     console.log('removed ')
   }
 
+  async consume(id) {
+
+    await this.consumerService.consume(`c-${id}`)
+  }
 
 
 }

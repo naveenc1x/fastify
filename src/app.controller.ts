@@ -1,9 +1,11 @@
-import { BadRequestException, Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { AppService } from './app.service';
+import { KafkaConsumerService } from './kafka-consumer.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService,
+    private readonly consumerService: KafkaConsumerService) { }
 
   @Get()
   getHello(): string {
@@ -24,6 +26,11 @@ export class AppController {
   @Get('/removeall')
   removeA() {
     this.appService.removeAlljob();
+  }
+
+  @Get(':id')
+  consume(@Param() params: any) {
+    this.consumerService.consume(params.id);
   }
 
 }

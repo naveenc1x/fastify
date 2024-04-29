@@ -1,11 +1,10 @@
 import { BadRequestException, Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { AppService } from './app.service';
-import { KafkaConsumerService } from './kafka-consumer.service';
+
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService,
-    private readonly consumerService: KafkaConsumerService) { }
+  constructor(private readonly appService: AppService){}
 
   @Get()
   getHello(): string {
@@ -28,9 +27,6 @@ export class AppController {
     this.appService.removeAlljob();
   }
 
-  @Get(':id')
-  consume(@Param() params: any) {
-    this.consumerService.consume(params.id);
-  }
+
 
 }
